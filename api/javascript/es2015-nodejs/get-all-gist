@@ -1,35 +1,9 @@
-/**
- * Lists gist on GitHub
- * node recipes/10-list-gists.js
- * Author Charlie Calvert
- */
 
-const GitHubClient = require("../libs/GitHubClient.js").GitHubClient;
-const listgists = require("../libs/features/listgists");
-const fs = require('fs');
-
-/* let githubCli = new GitHubClient({
-  baseUri:"http://github.at.home/api/v3",
-  token:process.env.TOKEN_GHITHUB_ENTERPRISE
-}, octocat); */
-
-// await octokit.request('GET /gists')
-
-let githubCli = new GitHubClient(
-  {
-    baseUri: "https://api.github.com",
-    token: process.env.TOKEN_GITHUB_DOT_COM,
-  },
-  listgists
-);
-
-const bashData =`
 #! /usr/bin/env bash
 
-LIGHT_RED=\`tput setaf 1\`
-LIGHT_GREEN=\`tput setaf 2\`
-YELLOW=\`tput setaf 3\`
-NC=\`tput sgr0\`
+LIGHT_RED=`tput setaf 1`
+LIGHT_GREEN=`tput setaf 2`
+NC=`tput sgr0`
 
 function message {
   echo
@@ -62,12 +36,7 @@ function runCommand() {
   INSTALL_ESLINT_PACKAGES=installEslintPackages
   case $1 in
       "elfdebug") getGist $GIST_ELF_DEBUG_ENZYME ElfDebugEnzyme.js ;;
-      "reactcomp") getGist $GIST_REACT_COMPONENT ReactComponent.js ;;\
-      "setrnen") getGist $GIST_REACT_NATIVE_ENZYME_NPM  setup-enzyme-react-native-npm ;;\
-      "setrney") getGist $GIST_REACT_NATIVE_ENZYME_YARN  setup-enzyme-react-native-yarn ;;\
-      "elvenlogger") getGist $GIST_ELVEN_LOGGER elven-logger.js ;;\
-      "reactcontrol") getGist $GIST_REACT_CONTROL control.js ;;\
-      "reactclass") getGist $GIST_REACT_CLASS ElfApp.js ;;
+      "reactcomp") getGist $GIST_REACT_COMPONENT ReactComponent.js ;;      "setrnen") getGist $GIST_REACT_NATIVE_ENZYME_NPM  setup-enzyme-react-native-npm ;;      "setrney") getGist $GIST_REACT_NATIVE_ENZYME_YARN  setup-enzyme-react-native-yarn ;;      "elvenlogger") getGist $GIST_ELVEN_LOGGER elven-logger.js ;;      "reactcontrol") getGist $GIST_REACT_CONTROL control.js ;;      "reactclass") getGist $GIST_REACT_CLASS ElfApp.js ;;
       "elven-html") getGist $GIST_ELF_HTML elf-index.html;;
       "elven-local-storage") getGist $GIST_ELVEN_LOCAL_STORAGE elf-local-storage.js ;;
       "elven-systemd-tools") 
@@ -97,7 +66,8 @@ while true; do
     echo -e "$LIGHT_GREEN  p) Elf Local Storage"
     echo -e "$LIGHT_GREEN  r) Elf Firebase"
     echo -e "$LIGHT_RED  x) Exit"
-    echo -e "\n$NC"
+    echo -e "
+$NC"
     read -p "Please make a selection: " eotuyx
     case $eotuyx in
         [Aa]* ) runEsLintAndPrettier false; continue;;
@@ -118,34 +88,7 @@ while true; do
         [Pp]* ) runCommand "elven-local-storage"; continue;;
         [Rr]* ) runCommand "elven-firebase"; continue;;
         [XxQq]* ) break;;
-        * )  -e "\n$NC" + "Please answer with a, b, c or x.";;
+        * )  -e "
+$NC" + "Please answer with a, b, c or x.";;
     esac
 done
-`
-
-function writeFile(fileName, contents) {
-  "use strict";
-  return new Promise(function (resolve, reject) {
-    fs.writeFile(fileName, contents, "utf8", function (err) {
-      if (err) {
-        reject(err);
-      }
-      resolve({
-        result: "success",
-      });
-    });
-  });
-}
-
-githubCli
-  .fetchGists({ handle: "charliecalvert" })
-  .then((data) => {
-    console.log(data.length);
-    for (const item of data) {
-      console.log(item.id, item.owner.login);
-    }
-    writeFile('get-all-gist', bashData);
-  })
-  .catch((error) => {
-    console.log("error", error);
-  });
