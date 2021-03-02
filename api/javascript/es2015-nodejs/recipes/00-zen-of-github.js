@@ -6,9 +6,14 @@ const GitHubClient = require('../libs/GitHubClient.js').GitHubClient;
 const octocat = require('../libs/features/octocat');
 
 
-let githubCli = new GitHubClient({
+/* let githubCli = new GitHubClient({
   baseUri:"http://github.at.home/api/v3",
   token:process.env.TOKEN_GHITHUB_ENTERPRISE
+}, octocat); */
+
+let githubCli = new GitHubClient({
+  baseUri:"https://api.github.com",
+  token: process.env.TOKEN_GITHUB_DOT_COM
 }, octocat);
 
 githubCli.octocat()

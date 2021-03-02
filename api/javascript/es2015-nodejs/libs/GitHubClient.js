@@ -2,7 +2,7 @@
  * GitHubClient
  *
  * Dependencies: node-fetch https://github.com/bitinn/node-fetch
- *
+ * Install: npm i node-fetch
  */
 const fetch = require('node-fetch');
 
