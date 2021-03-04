@@ -6,7 +6,8 @@
 
 const GitHubClient = require("../libs/GitHubClient.js").GitHubClient;
 const listgists = require("../libs/features/listgists");
-const fs = require('fs');
+const fs = require("fs");
+//const sc = require("../libs/colors/st")
 
 /* let githubCli = new GitHubClient({
   baseUri:"http://github.at.home/api/v3",
@@ -23,13 +24,10 @@ let githubCli = new GitHubClient(
   listgists
 );
 
-const bashData =`
+let bashData = `
 #! /usr/bin/env bash
 
-LIGHT_RED=\`tput setaf 1\`
-LIGHT_GREEN=\`tput setaf 2\`
-YELLOW=\`tput setaf 3\`
-NC=\`tput sgr0\`
+===INSERT_COLORS===
 
 function message {
   echo
@@ -121,7 +119,21 @@ while true; do
         * )  -e "\n$NC" + "Please answer with a, b, c or x.";;
     esac
 done
-`
+`;
+
+function readFile(fileName) {
+  "use strict";
+  return new Promise(function (resolve, reject) {
+    fs.readFile(fileName, "utf8", function (err, fileContents) {
+      if (err) {
+        reject(err);
+      }
+      resolve({
+        result: fileContents,
+      });
+    });
+  });
+}
 
 function writeFile(fileName, contents) {
   "use strict";
@@ -137,15 +149,32 @@ function writeFile(fileName, contents) {
   });
 }
 
+//var sc = readFile("../libs/colors/standard_colors");
+/* readFile("./libs/colors/standard-colors.sh")
+.then((value) => {
+  //console.log(value.result);
+  bashData = bashData.replace('===INSERT_COLORS===', value.result);
+  //console.log(bashData);
+})
+.catch((err) => {
+  console.log(err);
+}); */
+
+const colors = fs.readFileSync("./libs/colors/standard-colors.sh");
+bashData = bashData.replace('===INSERT_COLORS===', colors);
+console.log(bashData);
+
 githubCli
   .fetchGists({ handle: "charliecalvert" })
   .then((data) => {
     console.log(data.length);
     for (const item of data) {
-      console.log(item.id, item.owner.login);
+      const keys = Object.keys(item.files);
+      console.log(item.id, item.owner.login, keys[0]);
     }
-    writeFile('get-all-gist', bashData);
+    writeFile("get-all-gist", bashData);
   })
   .catch((error) => {
     console.log("error", error);
   });
+ 
