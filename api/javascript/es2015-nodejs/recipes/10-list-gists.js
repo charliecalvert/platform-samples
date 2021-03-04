@@ -7,6 +7,7 @@
 const GitHubClient = require("../libs/GitHubClient.js").GitHubClient;
 const listgists = require("../libs/features/listgists");
 const fs = require("fs");
+const elfUtils= require("elven-code").elfUtils;
 //const sc = require("../libs/colors/st")
 
 /* let githubCli = new GitHubClient({
@@ -28,6 +29,8 @@ let bashData = `
 #! /usr/bin/env bash
 
 ===INSERT_COLORS===
+
+===INSERT_NAMES===
 
 function message {
   echo
@@ -164,13 +167,22 @@ const colors = fs.readFileSync("./libs/colors/standard-colors.sh");
 bashData = bashData.replace('===INSERT_COLORS===', colors);
 console.log(bashData);
 
+function stripExtension(fileName) {
+  'use strict';
+  if (fileName.includes('.') && (fileName.lastIndexOf('.') !== 0)) {
+      return fileName.substr(0, fileName.lastIndexOf('.'));
+  } else {
+      return fileName;
+  }
+}
+
 githubCli
   .fetchGists({ handle: "charliecalvert" })
   .then((data) => {
     console.log(data.length);
     for (const item of data) {
       const keys = Object.keys(item.files);
-      console.log(item.id, item.owner.login, keys[0]);
+      console.log(stripExtension(keys[0]).toUpperCase() + "=" + item.git_pull_url);
     }
     writeFile("get-all-gist", bashData);
   })

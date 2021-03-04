@@ -6,6 +6,7 @@
   },
   "author": "@k33g",
   "dependencies": {
+    "elven-code": "^4.7.0",
     "node-fetch": "^1.6.3"
   }
 }
